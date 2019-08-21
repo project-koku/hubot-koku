@@ -86,14 +86,14 @@ objects:
         - hubot-koku
         from:
           kind: ImageStreamTag
-          name: "hubot${NAME}:latest"
+          name: "hubot-${NAME}:latest"
     - type: ConfigChange
     replicas: 1
     selector:
-      name: "${NAME}"
+      name: "hubot-${NAME}"
     template:
       metadata:
-        name: "$hubot-{NAME}"
+        name: "hubot-${NAME}"
         labels:
           name: "hubot-${NAME}"
       spec:
