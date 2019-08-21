@@ -1,0 +1,154 @@
+---
+kind: Template
+apiVersion: v1
+metadata:
+  name: hubot-koku
+  annotations:
+    openshift.io/display-name: Hubot
+    description: An Hubot Node.js application to interact with Koku admin APIs via Slack.
+    tags: hubot,nodejs, slack
+    iconClass: icon-nodejs
+    openshift.io/long-description: This template defines resources needed to run
+      a NodeJS Hubot application, including a build configuration and application deployment
+      configuration.
+    openshift.io/provider-display-name: Red Hat, Inc.
+    openshift.io/documentation-url: "https://koku.readthedocs.io/en/latest/"
+    template.openshift.io/bindable: 'false'
+message: 'The following service(s) have been created in your project: ${NAME}.'
+labels:
+  template: hubot-koku
+  app: hubot-koku
+objects:
+- kind: Service
+  apiVersion: v1
+  metadata:
+    name: "hubot-${NAME}"
+    annotations:
+      description: Exposes and load balances the application pods
+  spec:
+    ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+    selector:
+      name: "hubot-${NAME}"
+- kind: ImageStream
+  apiVersion: v1
+  metadata:
+    name: "${NAME}"
+    annotations:
+      description: Keeps track of changes in the application image
+- kind: BuildConfig
+  apiVersion: v1
+  metadata:
+    name: "hubot-${NAME}"
+    annotations:
+      description: Defines how to build the application
+      template.alpha.openshift.io/wait-for-ready: 'true'
+  spec:
+    source:
+      type: Git
+      git:
+        uri: "${SOURCE_REPOSITORY_URL}"
+        ref: "${SOURCE_REPOSITORY_REF}"
+      contextDir: "${CONTEXT_DIR}"
+    strategy:
+      sourceStrategy:
+        from:
+          kind: ImageStreamTag
+          name: "${BUILDER_IMAGE}"
+          namespace: openshift
+        env:
+        - name: NPM_MIRROR
+          value: "${NPM_MIRROR}"
+    output:
+      to:
+        kind: ImageStreamTag
+        name: "hubot-${NAME}:latest"
+    triggers:
+    - type: ImageChange
+    - type: ConfigChange
+- kind: DeploymentConfig
+  apiVersion: v1
+  metadata:
+    name: "hubot-${NAME}"
+    annotations:
+      description: Defines how to deploy the application server
+      template.alpha.openshift.io/wait-for-ready: 'true'
+  spec:
+    strategy:
+      type: Rolling
+    triggers:
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        containerNames:
+        - hubot-koku
+        from:
+          kind: ImageStreamTag
+          name: "hubot${NAME}:latest"
+    - type: ConfigChange
+    replicas: 1
+    selector:
+      name: "${NAME}"
+    template:
+      metadata:
+        name: "$hubot-{NAME}"
+        labels:
+          name: "hubot-${NAME}"
+      spec:
+        containers:
+        - name: "hubot-${NAME}"
+          image: " "
+          ports:
+          - containerPort: 8080
+          resources:
+            limits:
+              memory: "${MEMORY_LIMIT}"
+          env:
+            - name: HUBOT_HCCM_ADMIN_API_HOST
+              value: "${NAME}-masu.${NAMESPACE}.svc.cluster.local"
+            - name: HUBOT_SLACK_TOKEN
+              value: "${SLACK_TOKEN}"
+parameters:
+- name: NAME
+  displayName: Name
+  description: The name assigned to all of the frontend objects defined in this template.
+  required: true
+  value: koku
+- name: NAMESPACE
+  displayName: Namespace
+  description: The OpenShift Namespace where the ImageStream resides.
+  required: true
+  value: koku
+- name: MEMORY_LIMIT
+  displayName: Memory Limit
+  description: Maximum amount of memory the container can use.
+  required: true
+  value: 512Mi
+- name: SOURCE_REPOSITORY_URL
+  displayName: Git Repository URL
+  description: The URL of the repository with your application source code.
+  required: true
+  value: https://github.com/project-koku/hubot-koku.git
+- name: BUILDER_IMAGE
+  displayName: S2I Builder Image
+  description: The S2I builder image to use when building this application
+  required: true
+  value: rhoar-nodejs:10.x
+- name: SOURCE_REPOSITORY_REF
+  displayName: Git Reference
+  description: Set this to a branch name, tag or other ref of your repository if you
+    are not using the default branch.
+- name: CONTEXT_DIR
+  displayName: Context Directory
+  description: Set this to the relative path to your project if it is not in the root
+    of your repository.
+- name: NPM_MIRROR
+  displayName: Custom NPM Mirror URL
+  description: The custom NPM mirror URL
+  value: ''
+- name: SLACK_TOKEN
+  displayName: Slack token for Hubot
+  description: The Slack token interacting with Hubot
+  value: ''

@@ -1,0 +1,20 @@
+{
+  "name": "hubot-koku",
+  "version": "0.0.1",
+  "private": true,
+  "author": "Chris Hambridge <chambrid@redhat.com>",
+  "description": "A simple hubot for interacting with Koku admin APIs",
+  "dependencies": {
+    "axios": "^0.19.0",
+    "hubot": "^3.3.2",
+    "hubot-diagnostics": "^1.0.0",
+    "hubot-help": "^1.0.1",
+    "hubot-redis-brain": "^1.0.0",
+    "hubot-rules": "^1.0.0",
+    "hubot-scripts": "^2.17.2",
+    "hubot-slack": "^4.7.1"
+  },
+  "engines": {
+    "node": "0.10.x"
+  }
+}
