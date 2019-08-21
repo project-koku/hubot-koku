@@ -58,7 +58,7 @@ objects:
 - kind: ImageStream
   apiVersion: v1
   metadata:
-    name: "${NAME}"
+    name: "hubot-${NAME}"
     annotations:
       description: Keeps track of changes in the application image
 - kind: BuildConfig
@@ -80,7 +80,7 @@ objects:
         from:
           kind: ImageStreamTag
           name: "${BUILDER_IMAGE}"
-          namespace: openshift
+          namespace: ${NAMESPACE}
         env:
         - name: NPM_MIRROR
           value: "${NPM_MIRROR}"
