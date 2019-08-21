@@ -54,3 +54,16 @@ How to set environment variables will be specific to your operating system.
 Rather than recreate the various methods and best practices in achieving this,
 it's suggested that you search for a dedicated guide focused on your OS.
 
+
+### Deploy
+
+This project is meant to be deployed to OpenShift. You can do so with the following commands.
+
+```
+$ export NAMESPACE=myproject
+$ export SLACK_TOKEN=xoxb-YOUR-TOKEN-HERE
+$ oc login
+$ oc project $NAMESPACE
+$ oc process -f openshift/hubot-koku.yaml --param NAMESPACE=$NAMESPACE --param SLACK_TOKEN=$SLACK_TOKEN | tee >(oc apply -n $NAMESPACE -f -)
+```
+
