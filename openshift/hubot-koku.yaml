@@ -133,6 +133,8 @@ objects:
               value: "${NAME}-masu.${NAMESPACE}.svc.cluster.local"
             - name: HUBOT_SLACK_TOKEN
               value: "${SLACK_TOKEN}"
+            - name: HUBOT_WHITELIST
+              value: "${SLACK_CHANNEL_WHITELIST}"
 parameters:
 - name: NAME
   displayName: Name
@@ -175,3 +177,6 @@ parameters:
   displayName: Slack token for Hubot
   description: The Slack token interacting with Hubot
   value: ''
+- name: SLACK_CHANNEL_WHITELIST
+  displayName: Slack channel white list for Hubot
+  description: The Slack channel white list interacting with Hubot

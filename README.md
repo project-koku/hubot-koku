@@ -62,8 +62,9 @@ This project is meant to be deployed to OpenShift. You can do so with the follow
 ```
 $ export NAMESPACE=myproject
 $ export SLACK_TOKEN=xoxb-YOUR-TOKEN-HERE
+$ export SLACK_CHANNEL_WHITELIST=mychannel  # comma separated list of channels
 $ oc login
 $ oc project $NAMESPACE
-$ oc process -f openshift/hubot-koku.yaml --param NAMESPACE=$NAMESPACE --param SLACK_TOKEN=$SLACK_TOKEN | tee >(oc apply -n $NAMESPACE -f -)
+$ oc process -f openshift/hubot-koku.yaml --param NAMESPACE=$NAMESPACE --param SLACK_TOKEN=$SLACK_TOKEN --param SLACK_CHANNEL_WHITELIST=$SLACK_CHANNEL_WHITELIST | tee >(oc apply -n $NAMESPACE -f -)
 ```
 
