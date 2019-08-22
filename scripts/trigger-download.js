@@ -28,7 +28,30 @@ const API_HOST = process.env.HUBOT_HCCM_ADMIN_API_HOST || 'localhost'
 const API_PORT = process.env.HUBOT_HCCM_ADMIN_API_PORT || '8080'
 const API_PREFIX = process.env.HUBOT_HCCM_ADMIN_API_PREFIX || 'api/cost-management/v1'
 const API_ENDPOINT = `${API_PROTOCOL}://${API_HOST}:${API_PORT}/${API_PREFIX}`
+const CHANNEL_WHITELIST = process.env.HUBOT_WHITELIST
 module.exports = robot => {
+
+    robot.receiveMiddleware(function (context, next, done) {
+        if (typeof CHANNEL_WHITELIST === 'undefined') {
+            next(done)
+        } else {
+            let whitelist = CHANNEL_WHITELIST.split(',')
+            try {
+                let room = context.response.envelope.room
+                if (whitelist.includes(room)) {
+                    next(done)
+                } else {
+                    context.response.reply(`Sorry, I don't work in this channel: ${room}`)
+                    robot.logger.debug(`Invalid room ${room}`);
+                    context.response.message.finish()
+                    done();
+                }
+            } catch (error) {
+                robot.logger.debug(error);
+            }
+        }
+    });
+
 
     robot.respond(DOWNLOAD_REGEX, { id: DOWNLOAD_ID }, (res) => {
         robot.logger.debug(`${TAG}: ${DOWNLOAD_ID}`);
