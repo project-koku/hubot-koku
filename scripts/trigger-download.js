@@ -1,14 +1,14 @@
 // Description:
-//	Trigger cloud provider data processing for an account
+//	Trigger cloud provider data processing
 //
 // Configuration:
-// HUBOT_HCCM_ADMIN_API_PROTOCOL
-// HUBOT_HCCM_ADMIN_API_HOST
-// HUBOT_HCCM_ADMIN_API_PORT
-// HUBOT_HCCM_ADMIN_API_PREFIX
+//	HUBOT_HCCM_ADMIN_API_PROTOCOL
+//	HUBOT_HCCM_ADMIN_API_HOST
+//	HUBOT_HCCM_ADMIN_API_PORT
+//	HUBOT_HCCM_ADMIN_API_PREFIX
 //
 // Commands:
-//   hubot trigger-download
+//  hubot trigger-download - Trigger cloud provider data processing
 //
 // Author:
 //	chambridge@redhat.com
